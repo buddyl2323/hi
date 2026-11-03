@@ -1,13 +1,18 @@
-TIDAL FRONTIER — MULTIPLAYER FISHING GAME
+TIDAL FRONTIER — EXPANDED MULTIPLAYER EDITION
 
-Requirements: Node.js 18+ (no npm install needed)
+60 island-exclusive fish across 6 islands, 24 fishing rods, extreme catches,
+harder reactive fishing minigame, and Raider Blade PvP (10% wallet loot).
 
-1. Open Terminal in this folder.
-2. Run: node server.js
-3. Open http://localhost:3000 in your browser.
-4. Friends on the same Wi-Fi can visit http://YOUR-COMPUTER-LAN-IP:3000
-5. For internet multiplayer, host this Node.js server on a publicly accessible service that supports long-running Node processes. Share the public URL.
+Deploy to Render as Node Web Service:
+Build command: leave blank
+Start command: node server.js
+No npm install or package.json required.
+Upload index.html and server.js together to the repository root.
 
-Controls: WASD / arrow keys move, SPACE cast and reel, E shop, B board/disembark boat. Sell fish near an island. Progress is saved in each player's browser. Pirates are server-synchronized; cash, inventory and catches are browser-local in this prototype. No accounts, anti-cheat, or authoritative economy.
+Controls: WASD/arrows move, SPACE cast/reel, E shop, B boat, F PvP attack.
+Purchase the Raider Blade ($2,500) in the shop. Attack within 85 world units.
+PvP cooldown 15 seconds, victim protection 8 seconds after defeat.
 
-This is a stylized 2D playable prototype, not a photorealistic 3D game.
+IMPORTANT: This is still a prototype. Wallets and weapon ownership are browser-local
+and reported to the server. PvP range/cooldowns are checked server-side but
+there is no login, durable database, anti-cheat, or secure economy.
