@@ -16,3 +16,9 @@ PvP cooldown 15 seconds, victim protection 8 seconds after defeat.
 IMPORTANT: This is still a prototype. Wallets and weapon ownership are browser-local
 and reported to the server. PvP range/cooldowns are checked server-side but
 there is no login, durable database, anti-cheat, or secure economy.
+
+RESCUE UPDATE:
+- Press U or click UNSTUCK to return to the nearest island safely, without losing inventory or money.
+- If an existing saved game loads offshore and you own a boat, you automatically board it.
+- If you load offshore without a boat, you are moved safely to the nearest island.
+- Boarding works in a wider shoreline zone; disembarking places you safely on land.
