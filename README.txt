@@ -1,24 +1,9 @@
-TIDAL FRONTIER — EXPANDED MULTIPLAYER EDITION
+TIDAL FRONTIER — GLOBAL CHAT + ALL PRIOR UPGRADES
 
-60 island-exclusive fish across 6 islands, 24 fishing rods, extreme catches,
-harder reactive fishing minigame, and Raider Blade PvP (10% wallet loot).
+Includes all features from the Rescue Update (60 fish, 24 rods, 6 islands, harder fishing, Raider Blade PvP, unstuck and boat rescue), plus server-wide chat.
 
-Deploy to Render as Node Web Service:
-Build command: leave blank
-Start command: node server.js
-No npm install or package.json required.
-Upload index.html and server.js together to the repository root.
+Upload BOTH index.html and server.js to the same GitHub repository used by Render. Commit and redeploy the Render Web Service. Chat works only when the Node server is running; GitHub Pages alone cannot host multiplayer chat.
 
-Controls: WASD/arrows move, SPACE cast/reel, E shop, B boat, F PvP attack.
-Purchase the Raider Blade ($2,500) in the shop. Attack within 85 world units.
-PvP cooldown 15 seconds, victim protection 8 seconds after defeat.
+Chat: type in the Global Chat box and press Enter or Send. Messages are shared across all players connected to the same Render server, and the most recent 80 messages are held in server memory. They disappear if the server restarts. Messages have a 900 ms send cooldown and 180-character limit.
 
-IMPORTANT: This is still a prototype. Wallets and weapon ownership are browser-local
-and reported to the server. PvP range/cooldowns are checked server-side but
-there is no login, durable database, anti-cheat, or secure economy.
-
-RESCUE UPDATE:
-- Press U or click UNSTUCK to return to the nearest island safely, without losing inventory or money.
-- If an existing saved game loads offshore and you own a boat, you automatically board it.
-- If you load offshore without a boat, you are moved safely to the nearest island.
-- Boarding works in a wider shoreline zone; disembarking places you safely on land.
+Your existing browser save data is preserved by using the same tf_save key. No database or accounts are included.

@@ -1,11 +1,13 @@
 const http=require('http'),fs=require('fs'),path=require('path');
-const players=new Map(),cooldowns=new Map();let pirates=[{x:1100,y:700,angle:0},{x:2100,y:1450,angle:0}];
+const players=new Map(),cooldowns=new Map(),chatMessages=[],chatRate=new Map();let chatSequence=0;let pirates=[{x:1100,y:700,angle:0},{x:2100,y:1450,angle:0}];
 const port=process.env.PORT||3000,now=()=>Date.now();
 setInterval(()=>{const t=now()/1000;pirates.forEach((p,i)=>{p.x=(i?2100:1100)+Math.cos(t*.19+i*2)*360;p.y=(i?1450:700)+Math.sin(t*.19+i*2)*280;p.angle=t*.19+i*2});for(const [id,p] of players)if(now()-p.last>20000)players.delete(id)},100);
 const send=(r,status,obj)=>{r.writeHead(status,{'Content-Type':'application/json','Access-Control-Allow-Origin':'*'});r.end(JSON.stringify(obj))};
 const valid=id=>typeof id==='string'&&/^[a-z0-9-]{8,50}$/i.test(id);
 const body=(req,cb)=>{let b='';req.on('data',d=>{b+=d;if(b.length>10000)req.destroy()});req.on('end',()=>{try{cb(JSON.parse(b))}catch{send(req.res,400,{error:'Invalid request'})}})};
 http.createServer((req,res)=>{req.res=res;let u=new URL(req.url,'http://localhost');
+if(req.method==='GET'&&u.pathname==='/chat'){const after=Math.max(0,Number(u.searchParams.get('after'))||0);return send(res,200,{messages:chatMessages.filter(m=>m.seq>after)});}
+if(req.method==='POST'&&u.pathname==='/chat')return body(req,p=>{if(!valid(p.id))return send(res,400,{error:'Invalid player'});const message=String(p.text||'').trim().slice(0,180);if(!message)return send(res,400,{error:'Enter a message'});const t=now();if(t-(chatRate.get(p.id)||0)<900)return send(res,429,{error:'Wait a moment before sending another message'});chatRate.set(p.id,t);const player=players.get(p.id);const name=String(player?.name||p.name||'Angler').slice(0,18);const item={seq:++chatSequence,name,text:message,time:t};chatMessages.push(item);if(chatMessages.length>80)chatMessages.shift();send(res,200,{ok:true,seq:item.seq});});
 if(req.method==='GET'&&u.pathname==='/state')return send(res,200,{players:[...players.values()].map(({last,...p})=>p),pirates});
 if(req.method==='POST'&&u.pathname==='/update')return body(req,p=>{if(!valid(p.id))return send(res,400,{error:'Invalid player'});let old=players.get(p.id)||{};players.set(p.id,{...old,id:p.id,name:String(p.name||'Angler').slice(0,18),x:Math.max(0,Math.min(3200,Number(p.x)||0)),y:Math.max(0,Math.min(2200,Number(p.y)||0)),boat:!!p.boat,heading:Number(p.heading)||0,money:Math.max(0,Math.min(1e12,Number(p.money)||0)),weapon:!!p.weapon,last:now()});send(res,200,{ok:true})});
 if(req.method==='POST'&&u.pathname==='/ack')return body(req,p=>{let me=players.get(p.id);if(!me)return send(res,404,{error:'Player missing'});me.debit=0;send(res,200,{ok:true})});
