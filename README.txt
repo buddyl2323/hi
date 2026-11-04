@@ -15,3 +15,5 @@ IMPORTANT PERSISTENCE WARNING
 The default server saves accounts to accounts.json in its working folder. On Render, the ordinary filesystem can reset on deploy/restart. For reliable cross-device saves, configure a persistent disk on a compatible Render plan, mount it (example /var/data), and set environment variable ACCOUNT_DATA_FILE=/var/data/accounts.json. Without a persistent disk, account progress can be LOST when Render restarts/redeploys. For production use, a real database and stronger server-side game-state validation are recommended. Keep account data private and back it up. Never commit accounts.json to GitHub.
 
 The game also keeps its browser localStorage copy. Logging out does not delete local saved progress. Chat continues working with the same server. Z opens https://docs.google.com/document/u/0/.
+
+Easy signup update: usernames 2-20 letters/numbers/underscores, passwords 3-128 characters. Existing passwords are unchanged.
