@@ -1,19 +1,9 @@
-TIDAL FRONTIER — ACCOUNTS, PROGRESS, REDEEM CODES, GLOBAL CHAT
+TIDAL FRONTIER — VOID ABYSS UPDATE
 
-FEATURES
-- Login / create account (username + password). Passwords are salted and hashed on the server.
-- Progress saves to server accounts.json and reloads when you log in on another browser/device.
-- New accounts import progress already saved in this browser.
-- Redeem Buddyisthegoat (case-insensitive) ONCE per account for $10,000,000.
-- Press Z during gameplay to open Google Docs in a new tab (browser popup settings may apply).
-- All prior fish, rods, islands, boat fixes, PvP and hide/show global chat are retained.
+Upload index.html and server.js to the existing GitHub repository, then redeploy Render. Keep .gitignore.
 
-DEPLOY
-Replace BOTH index.html and server.js in your GitHub repository connected to Render. Do not deploy only to GitHub Pages: this needs the Node.js server for accounts, chat, and multiplayer.
+New island: Void Abyss, southeast corner of the world (near x=2990,y=1900). Ten new extremely difficult fish. The rarest fish, The Uncatchable, has an extremely low bite chance and a very difficult fishing minigame.
 
-IMPORTANT PERSISTENCE WARNING
-The default server saves accounts to accounts.json in its working folder. On Render, the ordinary filesystem can reset on deploy/restart. For reliable cross-device saves, configure a persistent disk on a compatible Render plan, mount it (example /var/data), and set environment variable ACCOUNT_DATA_FILE=/var/data/accounts.json. Without a persistent disk, account progress can be LOST when Render restarts/redeploys. For production use, a real database and stronger server-side game-state validation are recommended. Keep account data private and back it up. Never commit accounts.json to GitHub.
+Fish Index: 70 total species. Completing the index awards the permanent rod loganiskingthats (Power 65). This is stronger than the shop rods (max 24) but not the temporary Buddy Big Stick (9999). Existing saved index reward flags are preserved.
 
-The game also keeps its browser localStorage copy. Logging out does not delete local saved progress. Chat continues working with the same server. Z opens https://docs.google.com/document/u/0/.
-
-Easy signup update: usernames 2-20 letters/numbers/underscores, passwords 3-128 characters. Existing passwords are unchanged.
+All other gameplay and account/chat systems remain. Progress persistence on Render still requires persistent server storage; default ephemeral storage can reset accounts.
