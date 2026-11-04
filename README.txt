@@ -7,3 +7,5 @@ Upload BOTH index.html and server.js to the same GitHub repository used by Rende
 Chat: type in the Global Chat box and press Enter or Send. Messages are shared across all players connected to the same Render server, and the most recent 80 messages are held in server memory. They disappear if the server restarts. Messages have a 900 ms send cooldown and 180-character limit.
 
 Your existing browser save data is preserved by using the same tf_save key. No database or accounts are included.
+
+CHAT VISIBILITY: Click 💬 Hide Chat to collapse global chat, or 💬 Show Chat to reopen. Your choice is saved in this browser. Messages still sync while hidden.
