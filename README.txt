@@ -1,13 +1,16 @@
-TIDAL FRONTIER — VOID ABYSS UPDATE
+TIDAL FRONTIER — MEGA UPDATE
 
-Upload index.html and server.js to the existing GitHub repository, then redeploy Render. Keep .gitignore.
+Upload index.html, server.js, package.json and .gitignore to your existing GitHub repository.
+Deploy as a Render WEB SERVICE (Node.js), not GitHub Pages static hosting.
+Build command: npm install
+Start command: npm start
 
-New island: Void Abyss, southeast corner of the world (near x=2990,y=1900). Ten new extremely difficult fish. The rarest fish, The Uncatchable, has an extremely low bite chance and a very difficult fishing minigame.
+FEATURES: Leaderboards, Kraken boss battle, Golden/Rainbow/Shadow fish, daily rewards, money trading, bounties, arena wagering, 5 extra boats, full cooler inventory, rotating ocean weather, quests, upgradeable player bases. Open MEGA UPDATE in-game.
 
-Fish Index: 70 total species. Completing the index awards the permanent rod loganiskingthats (Power 65). This is stronger than the shop rods (max 24) but not the temporary Buddy Big Stick (9999). Existing saved index reward flags are preserved.
+LOGIN FIX: usernames are trimmed and case-insensitive, passwords can be 3+ characters, and sessions are persisted to a JSON file. New errors distinguish missing accounts from incorrect passwords. Login test passed locally.
 
-All other gameplay and account/chat systems remain. Progress persistence on Render still requires persistent server storage; default ephemeral storage can reset accounts.
+IMPORTANT: Render's ephemeral filesystem is NOT permanent. Set ACCOUNT_DATA_FILE=/var/data/accounts.json, SESSION_DATA_FILE=/var/data/sessions.json, GAME_DATA_FILE=/var/data/world.json and attach a persistent disk mounted at /var/data. If your Render plan does not support persistent disks, you must use a database or a persistent host instead. Previously deleted accounts cannot be recovered without a backup. Don't create new accounts until persistent storage is configured if you need progress to survive redeploys.
 
-BALANCE UPDATE: When a player defeats another with the Raider Blade, the victim loses 10% of their current wallet and the attacker receives that amount. The victim respawns at Starter Cove and has 8 seconds of protection. Death event IDs prevent the same death from charging the victim repeatedly during network polling. The existing 15-second attack cooldown remains. Note: money is still reported by clients; fully cheat-proof economy requires server-authoritative balances and persistent storage.
+Trade system currently supports money gifts held in escrow, not fish/rod swaps. Arena is a wagered random showdown, not a separate movement map. Boss is a cooperative server health bar. Bases are upgradeable levels, not yet editable 3D houses. Weather changes water appearance, not movement physics. Client-reported money remains susceptible to cheating; a fully secure economy requires server-authoritative progression.
 
-ECONOMY SINK UPDATE: On PvP death, victim loses 20% of their current wallet. The attacker gets 10%, and the other 10% is destroyed (not credited to any player). Rounding down to whole dollars.
+Existing chat, codes, fish index, islands, PvP 20% death penalty, and Buddy Big Stick are retained. Test live multiplayer before publishing broadly.
