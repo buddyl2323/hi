@@ -14,3 +14,5 @@ IMPORTANT: Render's ephemeral filesystem is NOT permanent. Set ACCOUNT_DATA_FILE
 Trade system currently supports money gifts held in escrow, not fish/rod swaps. Arena is a wagered random showdown, not a separate movement map. Boss is a cooperative server health bar. Bases are upgradeable levels, not yet editable 3D houses. Weather changes water appearance, not movement physics. Client-reported money remains susceptible to cheating; a fully secure economy requires server-authoritative progression.
 
 Existing chat, codes, fish index, islands, PvP 20% death penalty, and Buddy Big Stick are retained. Test live multiplayer before publishing broadly.
+
+CHROMEBOOK PERFORMANCE UPDATE: low graphics by default; quality button; culling, frame-time movement, non-overlapping multiplayer sync.
