@@ -29,6 +29,55 @@ if(req.method==='GET'&&u.pathname==='/account/me'){const a=accountFrom(req);if(!
 if(req.method==='POST'&&u.pathname==='/account/save')return body(req,p=>{const a=accountFrom(req);if(!a)return send(res,401,{error:'Please log in'});const progress=cleanProgress(p.progress);if(!progress)return send(res,400,{error:'Invalid progress'});progress.buddyRodUntil=Math.max(Number(a.progress?.buddyRodUntil)||0,Number(progress.buddyRodUntil)||0);if(progress.buddyRodUntil<=Date.now())progress.buddyRodUntil=0;a.progress=progress;try{flushAccounts()}catch{return send(res,500,{error:'Could not save progress'})}send(res,200,{ok:true})});
 if(req.method==='POST'&&u.pathname==='/account/redeem')return body(req,p=>{const a=accountFrom(req);if(!a)return send(res,401,{error:'Please log in'});const code=String(p.code||'').trim().toLowerCase();const buddyCode='wylie1234logan1234buddy1234shalin1234';if(code!=='buddyisthegoat'&&code!==buddyCode)return send(res,400,{error:'Invalid code'});if(!Array.isArray(a.codes))a.codes=[];if(a.codes.includes(code))return send(res,409,{error:'You already redeemed this code'});a.progress=a.progress||cleanProgress({money:75,rod:0,boat:-1,fish:[],x:530,y:450});if(code===buddyCode){a.progress.money=0;a.progress.buddyRodUntil=Date.now()+86400000;}else{a.progress.money=Math.min(1e12,a.progress.money+10000000);}a.codes.push(code);try{flushAccounts()}catch{return send(res,500,{error:'Could not save reward'})}send(res,200,{money:a.progress.money,buddyRodUntil:a.progress.buddyRodUntil||0,reward:code===buddyCode?'buddy':'money'})});
 if(req.method==='POST'&&u.pathname==='/account/beacon'){const a=accountFrom(req,u.searchParams.get('token'));if(!a)return send(res,401,{error:'Please log in'});return body(req,p=>{const progress=cleanProgress(p.progress);if(progress){progress.buddyRodUntil=Math.max(Number(a.progress?.buddyRodUntil)||0,Number(progress.buddyRodUntil)||0);if(progress.buddyRodUntil<=Date.now())progress.buddyRodUntil=0;progress.buddyRodUntil=Math.max(Number(a.progress?.buddyRodUntil)||0,Number(progress.buddyRodUntil)||0);if(progress.buddyRodUntil<=Date.now())progress.buddyRodUntil=0;a.progress=progress;try{flushAccounts()}catch{}}send(res,200,{ok:true})})}
+// Persistent clans: separate from player inventory and currency saves.
+const clanFile=process.env.CLAN_DATA_FILE||path.join(path.dirname(accountFile),'clans.json');
+let clans={};try{clans=JSON.parse(fs.readFileSync(clanFile,'utf8'))}catch{}
+function flushClans(){const tmp=clanFile+'.tmp';fs.writeFileSync(tmp,JSON.stringify(clans));fs.renameSync(tmp,clanFile)}
+function membership(username){return Object.values(clans).find(c=>c.members&&c.members[username])}
+function clanView(c){return {id:c.id,name:c.name,tag:c.tag,leader:c.leader,treasury:c.treasury||0,members:Object.entries(c.members).map(([key,role])=>({name:accounts[key]?.display||key,role})),messages:(c.messages||[]).slice(-40)}}
+if(req.method==='GET'&&u.pathname==='/clans'){const a=accountFrom(req),mine=a?membership(a.display.toLowerCase()):null;return send(res,200,{mine:mine?clanView(mine):null,leaderboard:Object.values(clans).map(c=>({id:c.id,name:c.name,tag:c.tag,members:Object.keys(c.members||{}).length,treasury:c.treasury||0})).sort((a,b)=>b.treasury-a.treasury||b.members-a.members).slice(0,30)})}
+if(req.method==='POST'&&u.pathname==='/clans/action')return body(req,p=>{
+ const a=accountFrom(req);if(!a)return send(res,401,{error:'Log in first'});
+ const user=a.display.toLowerCase(),action=String(p.action||''),c=membership(user);
+ let target,other,amount;
+ if(action==='create'){
+  if(c)return send(res,409,{error:'Leave your current clan first'});
+  const name=String(p.name||'').trim(),tag=String(p.tag||'').trim().toUpperCase();
+  if(!/^[a-zA-Z0-9 _-]{3,24}$/.test(name)||!/^[A-Z0-9]{2,5}$/.test(tag))return send(res,400,{error:'Name: 3–24 letters/numbers. Tag: 2–5 letters/numbers.'});
+  if(Object.values(clans).some(v=>v.name.toLowerCase()===name.toLowerCase()||v.tag===tag))return send(res,409,{error:'Clan name or tag already taken'});
+  const id=crypto.randomBytes(8).toString('hex');clans[id]={id,name,tag,leader:user,members:{[user]:'leader'},treasury:0,messages:[],invites:[]};
+ }else if(action==='invite'){
+  if(!c||!['leader','officer'].includes(c.members[user]))return send(res,403,{error:'Only leaders and officers can invite'});
+  target=String(p.username||'').trim().toLowerCase();if(!accounts[target])return send(res,404,{error:'Username not found'});
+  if(membership(target))return send(res,409,{error:'That player already belongs to a clan'});
+  c.invites=c.invites||[];if(!c.invites.includes(target))c.invites.push(target);
+ }else if(action==='join'){
+  if(c)return send(res,409,{error:'Leave your clan first'});
+  other=clans[String(p.id||'')];if(!other||!(other.invites||[]).includes(user))return send(res,403,{error:'You need an invitation to join'});
+  if(Object.keys(other.members).length>=30)return send(res,409,{error:'Clan full (30 members)'});
+  other.members[user]='member';other.invites=other.invites.filter(v=>v!==user);
+ }else if(action==='leave'){
+  if(!c)return send(res,404,{error:'Not in a clan'});
+  if(c.leader===user&&Object.keys(c.members).length>1)return send(res,409,{error:'Promote another leader or remove members before leaving'});
+  delete c.members[user];if(!Object.keys(c.members).length)delete clans[c.id];
+ }else if(action==='promote'||action==='kick'){
+  if(!c||c.leader!==user)return send(res,403,{error:'Leader only'});
+  target=String(p.username||'').trim().toLowerCase();if(!c.members[target]||target===user)return send(res,400,{error:'Choose another clan member'});
+  if(action==='kick')delete c.members[target];else if(p.role==='leader'){c.members[user]='officer';c.members[target]='leader';c.leader=target}else c.members[target]=c.members[target]==='officer'?'member':'officer';
+ }else if(action==='donate'){
+  if(!c)return send(res,404,{error:'Join a clan first'});
+  amount=Number(p.amount);if(!Number.isSafeInteger(amount)||amount<1||amount>10000000)return send(res,400,{error:'Donation must be $1–$10,000,000'});
+  if(!charge(a,amount))return send(res,409,{error:'Not enough money'});
+  c.treasury=(c.treasury||0)+amount;
+ }else if(action==='message'){
+  if(!c)return send(res,403,{error:'Join a clan first'});
+  const msg=String(p.text||'').trim().slice(0,180);if(!msg)return send(res,400,{error:'Message required'});
+  c.messages=c.messages||[];c.messages.push({name:a.display,text:msg,time:Date.now()});c.messages=c.messages.slice(-40);
+ }else return send(res,400,{error:'Unknown clan action'});
+ try{if(action==='donate')flushAccounts();flushClans()}catch(e){return send(res,500,{error:'Could not save clan data: persistent storage required'})}
+ const mine=membership(user);return send(res,200,{ok:true,mine:mine?clanView(mine):null,progress:action==='donate'?a.progress:undefined});
+});
+if(req.method==='GET'&&u.pathname==='/clans/invites'){const a=accountFrom(req);if(!a)return send(res,401,{error:'Log in first'});const user=a.display.toLowerCase();return send(res,200,{invites:Object.values(clans).filter(c=>(c.invites||[]).includes(user)).map(c=>({id:c.id,name:c.name,tag:c.tag}))})}
 if(req.method==='GET'&&u.pathname==='/game/leaderboard'){const leaders=Object.values(accounts).map(a=>({name:a.display,money:a.progress?.money||0,fish:getExtras(a).fishCaught||0,kills:getExtras(a).kills||0}));return send(res,200,{money:[...leaders].sort((a,b)=>b.money-a.money).slice(0,15),fish:[...leaders].sort((a,b)=>b.fish-a.fish).slice(0,15),kills:[...leaders].sort((a,b)=>b.kills-a.kills).slice(0,15)})}
 if(req.method==='GET'&&u.pathname==='/game/status'){return send(res,200,{boss:world.boss,bounties:world.bounties,trades:world.trades.filter(t=>t.status==='open').slice(-30),disaster:Math.floor(now()/240000)%4,disasterEnds:240000-now()%240000})}
 if(req.method==='POST'&&u.pathname==='/game/action')return body(req,p=>{const a=accountFrom(req);if(!a)return send(res,401,{error:'Please log in'});a.progress=a.progress||cleanProgress({money:75,rod:0,boat:-1,fish:[],x:530,y:450});const e=getExtras(a),action=String(p.action||''),amount=Math.floor(Number(p.amount)||0);let reward=0,message='Done';
