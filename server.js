@@ -18,7 +18,7 @@ function loginResult(username){const token=crypto.randomBytes(32).toString('hex'
 
 const players=new Map(),cooldowns=new Map(),chatMessages=[],chatRate=new Map();let chatSequence=0;let pirates=[{x:1100,y:700,angle:0},{x:2100,y:1450,angle:0}];
 const port=process.env.PORT||3000,now=()=>Date.now();
-setInterval(()=>{const t=now()/1000;pirates.forEach((p,i)=>{p.x=(i?2100:1100)+Math.cos(t*.19+i*2)*360;p.y=(i?1450:700)+Math.sin(t*.19+i*2)*280;p.angle=t*.19+i*2});for(const [id,p] of players)if(now()-p.last>20000)players.delete(id)},100);
+setInterval(()=>{const t=now()/1000;pirates.forEach((p,i)=>{p.x=(i?2100:1100)+Math.cos(t*.19+i*2)*360;p.y=(i?1450:700)+Math.sin(t*.19+i*2)*280;p.angle=t*.19+i*2});for(const [id,p] of players)if(now()-p.last>20000)players.delete(id)},250);
 const send=(r,status,obj)=>{r.writeHead(status,{'Content-Type':'application/json','Access-Control-Allow-Origin':'*'});r.end(JSON.stringify(obj))};
 const valid=id=>typeof id==='string'&&/^[a-z0-9-]{8,50}$/i.test(id);
 const body=(req,cb)=>{let b='';req.on('data',d=>{b+=d;if(b.length>10000)req.destroy()});req.on('end',()=>{try{cb(JSON.parse(b))}catch{send(req.res,400,{error:'Invalid request'})}})};

@@ -16,3 +16,7 @@ Trade system currently supports money gifts held in escrow, not fish/rod swaps. 
 Existing chat, codes, fish index, islands, PvP 20% death penalty, and Buddy Big Stick are retained. Test live multiplayer before publishing broadly.
 
 CHROMEBOOK PERFORMANCE UPDATE: low graphics by default; quality button; culling, frame-time movement, non-overlapping multiplayer sync.
+
+PERFORMANCE PATCH (November 5): Low graphics limits rendering to ~30 FPS, draws fewer water waves and island decorations, and reduces multiplayer polling to ~1.2 updates/sec. Position is saved periodically rather than rewriting progress every five seconds. Saves are deduplicated, and temporary connection errors no longer erase the stored login token.
+
+NOTE: A Render persistent disk or external database is still required to preserve accounts across deployments. A browser-only code update cannot make ephemeral server storage permanent. Server/client multiplayer and account persistence should be tested on the actual deployed host.
