@@ -20,3 +20,9 @@ CHROMEBOOK PERFORMANCE UPDATE: low graphics by default; quality button; culling,
 PERFORMANCE PATCH (November 5): Low graphics limits rendering to ~30 FPS, draws fewer water waves and island decorations, and reduces multiplayer polling to ~1.2 updates/sec. Position is saved periodically rather than rewriting progress every five seconds. Saves are deduplicated, and temporary connection errors no longer erase the stored login token.
 
 NOTE: A Render persistent disk or external database is still required to preserve accounts across deployments. A browser-only code update cannot make ephemeral server storage permanent. Server/client multiplayer and account persistence should be tested on the actual deployed host.
+
+BAIT CRATES UPDATE
+- Buy a bait crate for $2,500, open for 1% chance of 3 instant catch bait uses.
+- Redeem buddyisdaddy once per account for permanent instant-catch rod.
+- Upload all files to your 2D repository and redeploy server.
+- Account saving still requires persistent Render storage; this update does not solve ephemeral storage.
