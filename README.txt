@@ -1,28 +1,15 @@
-TIDAL FRONTIER — MEGA UPDATE
+TIDAL FRONTIER — SUPABASE + BASE + BOUNTY FIX
 
-Upload index.html, server.js, package.json and .gitignore to your existing GitHub repository.
-Deploy as a Render WEB SERVICE (Node.js), not GitHub Pages static hosting.
-Build command: npm install
-Start command: npm start
+This ZIP includes ALL the previous base/bounty update AND the Supabase account migration.
 
-FEATURES: Leaderboards, Kraken boss battle, Golden/Rainbow/Shadow fish, daily rewards, money trading, bounties, arena wagering, 5 extra boats, full cooler inventory, rotating ocean weather, quests, upgradeable player bases. Open MEGA UPDATE in-game.
+1. In Render > Tidal Frontier > Environment, add DATABASE_URL with your Supabase Session Pooler PostgreSQL URL (replace [YOUR-PASSWORD] including brackets). Never put this URL in GitHub.
+2. Upload index.html, server.js, package.json, .gitignore from this ZIP to the ROOT of the SAME GitHub repository for your Render service, replacing the old files. Do not upload the ZIP itself or upload DATABASE_URL.
+3. In Render, deploy latest commit. Build command: npm install ; Start command: npm start.
+4. Wait for logs to show 'Supabase connected'. The server automatically creates its own tidal_storage table and loads all accounts/sessions/world/clans from Supabase.
+5. Test creating an account, catching/selling fish, logging out/in, and redeploying. Check that progress survives. Test the bounty input and MY BASE upgrades.
 
-LOGIN FIX: usernames are trimmed and case-insensitive, passwords can be 3+ characters, and sessions are persisted to a JSON file. New errors distinguish missing accounts from incorrect passwords. Login test passed locally.
+IMPORTANT: Accounts already deleted by Render's old ephemeral filesystem cannot be recovered without a backup. The new database begins empty. Old accounts still in the previous server's temporary JSON files are NOT automatically imported. Do not assume they have been migrated. Contact me if you have a backup of accounts.json / clans.json / world.json.
 
-IMPORTANT: Render's ephemeral filesystem is NOT permanent. Set ACCOUNT_DATA_FILE=/var/data/accounts.json, SESSION_DATA_FILE=/var/data/sessions.json, GAME_DATA_FILE=/var/data/world.json and attach a persistent disk mounted at /var/data. If your Render plan does not support persistent disks, you must use a database or a persistent host instead. Previously deleted accounts cannot be recovered without a backup. Don't create new accounts until persistent storage is configured if you need progress to survive redeploys.
+If Render logs show a Supabase connection error, check that you selected Session Pooler, your password is correct, and the DATABASE_URL is entered in Render (not GitHub). Special characters in database passwords must be URL-encoded in connection strings.
 
-Trade system currently supports money gifts held in escrow, not fish/rod swaps. Arena is a wagered random showdown, not a separate movement map. Boss is a cooperative server health bar. Bases are upgradeable levels, not yet editable 3D houses. Weather changes water appearance, not movement physics. Client-reported money remains susceptible to cheating; a fully secure economy requires server-authoritative progression.
-
-Existing chat, codes, fish index, islands, PvP 20% death penalty, and Buddy Big Stick are retained. Test live multiplayer before publishing broadly.
-
-CHROMEBOOK PERFORMANCE UPDATE: low graphics by default; quality button; culling, frame-time movement, non-overlapping multiplayer sync.
-
-PERFORMANCE PATCH (November 5): Low graphics limits rendering to ~30 FPS, draws fewer water waves and island decorations, and reduces multiplayer polling to ~1.2 updates/sec. Position is saved periodically rather than rewriting progress every five seconds. Saves are deduplicated, and temporary connection errors no longer erase the stored login token.
-
-NOTE: A Render persistent disk or external database is still required to preserve accounts across deployments. A browser-only code update cannot make ephemeral server storage permanent. Server/client multiplayer and account persistence should be tested on the actual deployed host.
-
-BAIT CRATES UPDATE
-- Buy a bait crate for $2,500, open for 1% chance of 3 instant catch bait uses.
-- Redeem buddyisdaddy once per account for permanent instant-catch rod.
-- Upload all files to your 2D repository and redeploy server.
-- Account saving still requires persistent Render storage; this update does not solve ephemeral storage.
+Security: Keep DATABASE_URL and your database password private. Supabase's free tier has usage limits and may pause inactive projects. This patch preserves the existing game's client-trusting money/PvP mechanics; it does not fully prevent cheating.
