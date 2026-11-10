@@ -1,0 +1,22 @@
+TIDAL FRONTIER: CORE GAMEPLAY + KRAKEN / CHROMEBOOK PATCH
+
+Built on the latest smooth-cannons ZIP. Existing accounts, Supabase, clans, houses, bait crates, and server files retained.
+
+WHAT CHANGED
+- Ten new endgame rods (34 regular rods total).
+- Rod levels affect rarity luck, bite wait time, green-zone accuracy, required reeling hits, chance of critical pulls, and chance of a bonus fish.
+- Fish have random weights and weight-adjusted values; rare fish can reverse the needle.
+- Reel movement now uses elapsed frame time, reducing differences across high/low FPS.
+- Medium/high graphics show subtle fish silhouettes under the water; low graphics disables these to preserve FPS.
+- Kraken is a shared server boss at approximately (1650,1120), marked on a mini-map at the top right. Cannons deal 35 damage per hit; it has 1200 HP and respawns 90 seconds after defeat.
+- Remote players' boat positions interpolate between network snapshots to reduce visible jumps.
+- Low graphics uses 65% internal canvas resolution and fewer water/tree effects to improve Chromebook performance.
+
+LIMITATIONS
+- No verified FPS measurement on your Chromebook; the performance changes are best-effort.
+- Kraken does not yet give a special loot reward, and the mini-map is a basic locator, not a full-screen map.
+- This is a gameplay-focused subset of the large requested list; not every suggested feature 1-20 is fully implemented (for example, rods do not break or need repair).
+- Existing server-side cannon fire and PvP rules are retained. Live multiplayer testing is still required.
+
+INSTALL
+Upload index.html, server.js, package.json, and .gitignore to the existing GitHub repository. Keep your existing Render DATABASE_URL environment variable. Render build command: npm install; start command: npm start. Do not commit secrets.
