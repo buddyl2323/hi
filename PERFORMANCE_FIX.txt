@@ -1,0 +1,9 @@
+Performance correction:
+- Fixed graphics modes: no more 30% or 55% resolution scaling; all modes use crisp 1:1 canvas pixels.
+- Removed intentional 15/25/30 FPS throttling; rendering now targets up to 60 FPS (device-dependent).
+- Low/Medium/High change world details, not image sharpness or frame cap.
+- Reduced expensive wave drawing and island foliage on Medium/High.
+- Reduced unnecessary canvas clear operations and HUD refresh frequency.
+- Multiplayer polls every 1.2 seconds rather than 0.85 seconds; smoothed remote boats without offscreen snap.
+- Preserved existing game features and server code.
+Not benchmarked on your hardware. Use Chrome performance profiler if slowdown persists; a server latency problem can look like movement lag even with good FPS.
