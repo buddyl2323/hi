@@ -13,3 +13,5 @@ IMPORTANT: Accounts already deleted by Render's old ephemeral filesystem cannot 
 If Render logs show a Supabase connection error, check that you selected Session Pooler, your password is correct, and the DATABASE_URL is entered in Render (not GitHub). Special characters in database passwords must be URL-encoded in connection strings.
 
 Security: Keep DATABASE_URL and your database password private. Supabase's free tier has usage limits and may pause inactive projects. This patch preserves the existing game's client-trusting money/PvP mechanics; it does not fully prevent cheating.
+
+SMOOTH CANNON PATCH: Client animates cannonballs every frame using server velocity instead of snapping to positions at each network poll. Server now transmits velocity.
